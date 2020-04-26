@@ -1,0 +1,49 @@
+.almanac {
+  table {
+    width: 100%;
+  }
+  table tr {
+    .title {
+      font-size: 40px;
+      text-align: center;
+    }
+    .detail {
+      h3, p {
+        margin: 10px 25px;
+      }
+    }
+    &.fit {
+      .title {
+        background-color: #fe4;
+      }
+      .detail {
+        background-color: #ffa;
+      }
+    }
+    &.unfit {
+      .title {
+        background-color: #f44;
+        color: #fff;
+      }
+      .detail {
+        background-color: #fdd;
+      }
+    }
+  }
+  .other {
+    h4 {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .direction {
+      color: #4a4;
+    }
+    .mekami {
+      color: #f87;
+    }
+  }
+  footer {
+    margin: 20px 0;
+    color: #aaa;
+  }
+}
