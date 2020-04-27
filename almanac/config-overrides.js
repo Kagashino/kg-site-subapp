@@ -2,16 +2,21 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const DefinePlugin = require('webpack').DefinePlugin;
 const SUB_APP_NAME = require('./package').name;
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3333';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const VERSION = process.env.SUB_APP_VERSION || 'test';
 const SUB_APP_TITLE = '程序员老黄历';
 
 module.exports = (defaultConfig) => {
   const config = { ...defaultConfig };
+
+  config.output.publicPath = `./`
+
   config.externals = {
     react: 'React',
     'react-dom': 'ReactDOM'
   };
+
+
   config.plugins.push(
     new ManifestPlugin({
       fileName: 'subapp-manifest.json',
@@ -27,7 +32,7 @@ module.exports = (defaultConfig) => {
       }
     }),
     new DefinePlugin({
-      SUB_APP_NAME
+      'process.env.SUB_APP_NAME': `"${SUB_APP_NAME}"`
     })
   );
   return config;

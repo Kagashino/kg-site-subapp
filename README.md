@@ -12,29 +12,79 @@ kg-site 匹配子应用路由，路由容器组件发起异步请求，获取子
 名称必须符合url规则，如`almanac` ，这将作为你的应用路径： `kgshino.com/subapp/almanac`。
 
 ### 二、编写入口文件
-推荐 `create-react-app` 或者 `@vue/cli` 搭建。
+推荐 `create-react-app` 或者 `@vue/cli` 搭建你的项目。  
+修改项目入口文件，由直接渲染转为监听父应用事件：
+```typescript jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+import './index.scss';
+
+function bootstrap() {
+  const subAppName = process.env.SUB_APP_NAME as string;
+  const getContainer = () => document.getElementById(subAppName);
+  const render = (container: HTMLElement | null) => ReactDOM.render(
+    (
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    ),
+    container
+  );
+
+  // 如果不在父应用环境下，直接渲染
+  if (!getContainer()) {
+    return render(document.getElementById('root'))
+  }
+
+
+  document.addEventListener(`LAUNCH_APP:${subAppName}`, ()=> {
+    render(getContainer());
+  });
+
+  document.addEventListener(`CLOSE_APP:${subAppName}`, ()=>{
+    const container: HTMLElement | null = getContainer();
+    if (!container) {
+      return;
+    }
+    ReactDOM.unmountComponentAtNode(container);
+  })
+}
+
+bootstrap();
+
+```
 
 ### 三、提供 subapp-manifest 文件
 配置项目 webpack ，使用 `webpack-manifest-plugin` 输出额外的 `subapp-manifest.json` 文件：
 ```
 const ManifestPlugin = require('webpack-manifest-plugin');
+const SUB_APP_NAME = require('package.json').name; // 如 kg-site-almanac
 
 module.exports = {
-	plugins: [
-		new ManifestPlugin({
-	      fileName: 'subapp-manifest.json',
-	      filter: ({ path })=>/\.(js|css)$/.test(path),
-	      generate: (seed, files) => {
-	        const BASE_URL = process.env.BASE_URL || 'http://localhost:3333';
-	        const VERSION = process.env.SUBAPP_VERSION || 'test';
-	        return {
-	          version: VERSION,
-	          baseUrl: BASE_URL,
-	          files: files.map(i=>i.path)
-	        };
-	      }
-	    })
-	]
+    plugins: [
+        new ManifestPlugin({
+            fileName: 'subapp-manifest.json',
+            filter: ({ path })=>/\.(js|css)$/.test(path),
+            generate: (seed, files) => {
+                const BASE_URL = process.env.BASE_URL;
+                const VERSION = process.env.SUBAPP_VERSION ;
+                return {
+                    name: SUB_APP_NAME.replace(/^kg-site-/, ''),
+                    title: SUB_APP_TITLE, // 中文应用名
+                    version: VERSION,  // 版本号
+                    baseUrl: BASE_URL,  // 资源地址
+                    files: files.map(i=>i.path)
+                };
+            }
+        }),
+        // 指定全局应用名称
+        // 原理是Webpack对这个变量进行字符串替换，所以记得加单/双引号
+        new DefinePlugin({
+            'process.env.SUB_APP_NAME': `"${SUB_APP_NAME}"`
+        })
+    ]
 };
 
 ```
@@ -78,20 +128,19 @@ module.exports = {
 |vue|2.6.11|Vue|
 |vue|3.0-alpha|Vue3|
 
-配置方法：
+本地开发可以关闭，打包构建时，将下列依赖标记为 `external` 以减小你的应用体积。配置方法示例：
 
 ```
 module.exports = {
-	externals: {
-		'react': 'React',
-		'react-dom': 'ReactDOM',
-		'vue': 'Vue',
-		'vuex': 'Vuex'
-	}
+    externals: {
+        'react': 'React',
+        'react-dom': 'ReactDOM',
+        'vue': 'Vue',
+        'vuex': 'Vuex'
+    }
 }
 ```
 
-注：本地开发可以关闭
 
 ## 待定项目
 

@@ -5,28 +5,27 @@ import App from './App';
 import './index.scss';
 
 function bootstrap() {
-
-  const getContainer = () => document.getElementById(process.env.SUB_APP_NAME);
+  const subAppName = process.env.SUB_APP_NAME as string;
+  const getContainer = () => document.getElementById(subAppName);
+  const render = (container: HTMLElement | null) => ReactDOM.render(
+    (
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    ),
+    container
+  );
 
   if (!getContainer()) {
-    return ReactDOM.render(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>,
-      document.getElementById('root')
-    );
+    return render(document.getElementById('root'))
   }
 
-  document.addEventListener('LAUNCH_APP:kg-site-almanac', ()=> {
-    ReactDOM.render(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>,
-      getContainer(),
-    );
+
+  document.addEventListener(`LAUNCH_APP:${subAppName}`, ()=> {
+    render(getContainer());
   });
 
-  document.addEventListener('CLOSE_APP:kg-site-almanac', ()=>{
+  document.addEventListener(`CLOSE_APP:${subAppName}`, ()=>{
     const container: HTMLElement | null = getContainer();
     if (!container) {
       return;
