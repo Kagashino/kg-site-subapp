@@ -1,6 +1,6 @@
 import React from 'react';
 import { init } from 'programmer-almanac-generator';
-import { AlmanacResult } from 'programmer-almanac-generator/src/types';
+import { AlmanacResult } from "programmer-almanac-generator/dist";
 
 function App() {
   const res: AlmanacResult = init(new Date());

@@ -9,8 +9,6 @@ const SUB_APP_TITLE = '程序员老黄历';
 module.exports = (defaultConfig) => {
   const config = { ...defaultConfig };
 
-  config.output.publicPath = `./`
-
   config.externals = {
     react: 'React',
     'react-dom': 'ReactDOM'
