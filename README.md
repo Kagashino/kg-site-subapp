@@ -12,49 +12,32 @@ kg-site 匹配子应用路由，路由容器组件发起异步请求，获取子
 名称必须符合url规则，如`almanac` ，这将作为你的应用路径： `kgshino.com/subapp/almanac`。
 
 ### 二、编写入口文件
-推荐 `create-react-app` 或者 `@vue/cli` 搭建你的项目。  
+我们提供了 [插件](https://github.com/Kagashino/kg-site-subapp-controller)  控制子应用的启动与关闭时机。
+安装依赖：
+> npm i kg-site-subapp-controller 
+
 修改项目入口文件，由直接渲染转为监听父应用事件：
 ```typescript jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { bootstrap } from 'kg-site-subapp-controller';
+import App from './src/App';
 
-import './index.scss';
-
-function bootstrap() {
-  const subAppName = process.env.SUB_APP_NAME as string;
-  const getContainer = () => document.getElementById(subAppName);
-  const render = (container: HTMLElement | null) => ReactDOM.render(
-    (
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    ),
-    container
-  );
-
-  // 如果不在父应用环境下，直接渲染
-  if (!getContainer()) {
-    return render(document.getElementById('root'))
-  }
-
-
-  document.addEventListener(`LAUNCH_APP:${subAppName}`, ()=> {
-    render(getContainer());
-  });
-
-  document.addEventListener(`CLOSE_APP:${subAppName}`, ()=>{
-    const container: HTMLElement | null = getContainer();
-    if (!container) {
-      return;
-    }
+bootstrap('almanac', {
+  onLaunch (container) {
+    ReactDOM.render(<App />, contaienr);
+  },
+  onClose (container) {
     ReactDOM.unmountComponentAtNode(container);
-  })
-}
-
-bootstrap();
+  },
+  fallback () {
+    // 当没有找到容器时（即脱离父应用html环境，按正常流程走）
+    ReactDOM.render(<App />, document.getElementById('root'));
+  }
+})
 
 ```
+
 
 ### 三、提供 subapp-manifest 文件
 配置项目 webpack ，使用 `webpack-manifest-plugin` 输出额外的 `subapp-manifest.json` 文件：
@@ -125,8 +108,7 @@ module.exports = {
 |:---:|:---:|:---:|
 |react|16.13.1|React|
 |react-dom|16.13.1|ReactDOM|
-|vue|2.6.11|Vue|
-|vue|3.0-alpha|Vue3|
+|vue|3.0-alpha|Vue|
 
 本地开发可以关闭，打包构建时，将下列依赖标记为 `external` 以减小你的应用体积。配置方法示例：
 

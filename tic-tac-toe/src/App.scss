@@ -1,0 +1,35 @@
+.panel {
+  margin: 0 auto;
+  text-align: center;
+  ul, li {
+    margin: 0;
+    padding: 0;
+  }
+  button {
+    background-color: #fff;
+  }
+
+  .reset {
+    margin: 20px auto;
+  }
+
+  .grids {
+    margin: 0 auto;
+    width: 300px;
+  }
+
+  .grid{
+    width: 96px;
+    text-decoration: none;
+    display: inline-block;
+    button {
+      vertical-align: top;
+      width: 96px;
+      height: 96px;
+      font-size: 30px;
+    }
+  }
+
+}
+
+
