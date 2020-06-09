@@ -10,12 +10,12 @@ function App({ subAppName }: { subAppName: string }) {
   const handleReset = useCallback(()=>{
     game.reset();
     update(Date.now());
-  }, [update]);
+  }, [update, game]);
 
   const handlePlace = useCallback((x)=>{
     game.place(x);
     update(Date.now());
-  }, [update]);
+  }, [update, game]);
 
   return (
     <div className={subAppName}>
