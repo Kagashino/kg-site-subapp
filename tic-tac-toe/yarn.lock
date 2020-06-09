@@ -7235,10 +7235,10 @@ jsx-ast-utils@^2.2.3:
     array-includes "^3.1.1"
     object.assign "^4.1.0"
 
-kg-site-subapp-controller@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/kg-site-subapp-controller/-/kg-site-subapp-controller-0.0.3.tgz#3069884f06d15a200b1e33d793b1561068828649"
-  integrity sha512-/MMVTyKgYXZ3XE27+HwiuYjMXg2gbnuhKn0+lk2Oo4owYvn1XWRkd+FSXlaQF2jXC9Nqb4pKL5S3g8BQCms5kw==
+kg-site-subapp-controller@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/kg-site-subapp-controller/-/kg-site-subapp-controller-0.0.4.tgz#819ecf339b5fb22bac7a8f59762f9c61c8d3f437"
+  integrity sha512-W3W5dn/bCR5KdXajip42sBDKRZE+frwHPl9JAcymUxin+4ZmO5XWEMKvp14k7Zo7mMVJe032hOvc6jTJEFPfoQ==
 
 killable@^1.0.1:
   version "1.0.1"
